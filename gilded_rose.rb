@@ -1,5 +1,15 @@
-def update_quality(items)
-  items.each do |item|
+class GildedRose
+  attr_reader :item
+
+  def initialize(item)
+    @item = item
+  end
+
+  def update_quality
+    if item.name == "NORMAL ITEM"
+      return update_quality_normal
+    end
+
     if item.name != 'Aged Brie' && item.name != 'Backstage passes to a TAFKAL80ETC concert'
       if item.quality > 0
         if item.name != 'Sulfuras, Hand of Ragnaros'
@@ -43,6 +53,20 @@ def update_quality(items)
         end
       end
     end
+  end  
+
+  def update_quality_normal
+    item.sell_in -= 1
+    return if item.quality == 0
+
+    item.quality -= 1
+    item.quality -= 1 if item.sell_in <= 0
+  end
+end
+
+def update_quality(items)
+  items.each do |item|
+    GildedRose.new(item).update_quality  
   end
 end
 
