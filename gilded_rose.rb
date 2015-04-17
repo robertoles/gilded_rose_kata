@@ -10,6 +10,8 @@ class GildedRose
       return update_quality_normal
     elsif item.name == "Aged Brie"
       return update_quality_aged_brie
+    elsif item.name == 'Sulfuras, Hand of Ragnaros'
+      return update_quality_sulfuras
     end
 
     if item.name != 'Aged Brie' && item.name != 'Backstage passes to a TAFKAL80ETC concert'
@@ -71,6 +73,10 @@ class GildedRose
 
     item.quality += 1
     item.quality += 1 if item.sell_in <= 0 && item.quality < 50
+  end
+
+  def update_quality_sulfuras
+
   end
 end
 
