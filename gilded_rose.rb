@@ -2,19 +2,20 @@ class GildedRose
   attr_reader :item
 
   def initialize(item)
-    @item = item
+    @item = item_classes[item.name].new(item)
+  end
+
+  def item_classes
+    {
+      "NORMAL ITEM" => NormalItem,
+      "Aged Brie" => BrieItem,
+      "Sulfuras, Hand of Ragnaros" => SulfurasItem,
+      "Backstage passes to a TAFKAL80ETC concert" => BackstageItem
+    }
   end
 
   def update_quality
-    if item.name == "NORMAL ITEM"
-      NormalItem.new(item).update_quality
-    elsif item.name == "Aged Brie"
-      BrieItem.new(item).update_quality
-    elsif item.name == 'Sulfuras, Hand of Ragnaros'
-      SulfurasItem.new(item).update_quality
-    elsif item.name == 'Backstage passes to a TAFKAL80ETC concert'
-      BackstageItem.new(item).update_quality
-    end
+    item.update_quality
   end
 end
 
