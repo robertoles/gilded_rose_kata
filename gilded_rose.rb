@@ -12,52 +12,10 @@ class GildedRose
       return update_quality_aged_brie
     elsif item.name == 'Sulfuras, Hand of Ragnaros'
       return update_quality_sulfuras
+    elsif item.name == 'Backstage passes to a TAFKAL80ETC concert'
+      return update_quality_backstage
     end
-
-    if item.name != 'Aged Brie' && item.name != 'Backstage passes to a TAFKAL80ETC concert'
-      if item.quality > 0
-        if item.name != 'Sulfuras, Hand of Ragnaros'
-          item.quality -= 1
-        end
-      end
-    else
-      if item.quality < 50
-        item.quality += 1
-        if item.name == 'Backstage passes to a TAFKAL80ETC concert'
-          if item.sell_in < 11
-            if item.quality < 50
-              item.quality += 1
-            end
-          end
-          if item.sell_in < 6
-            if item.quality < 50
-              item.quality += 1
-            end
-          end
-        end
-      end
-    end
-    if item.name != 'Sulfuras, Hand of Ragnaros'
-      item.sell_in -= 1
-    end
-    if item.sell_in < 0
-      if item.name != "Aged Brie"
-        if item.name != 'Backstage passes to a TAFKAL80ETC concert'
-          if item.quality > 0
-            if item.name != 'Sulfuras, Hand of Ragnaros'
-              item.quality -= 1
-            end
-          end
-        else
-          item.quality = item.quality - item.quality
-        end
-      else
-        if item.quality < 50
-          item.quality += 1
-        end
-      end
-    end
-  end  
+  end
 
   def update_quality_normal
     item.sell_in -= 1
@@ -77,6 +35,16 @@ class GildedRose
 
   def update_quality_sulfuras
 
+  end
+
+  def update_quality_backstage
+    item.sell_in -= 1
+    return if item.quality == 50
+    return item.quality = 0 if item.sell_in < 0 
+
+    item.quality += 1
+    item.quality += 1 if item.sell_in < 10
+    item.quality += 1 if item.sell_in < 5
   end
 end
 
