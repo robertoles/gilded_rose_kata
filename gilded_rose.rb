@@ -7,37 +7,68 @@ class GildedRose
 
   def update_quality
     if item.name == "NORMAL ITEM"
-      return update_quality_normal
+      NormalItem.new(item).update_quality
     elsif item.name == "Aged Brie"
-      return update_quality_aged_brie
+      BrieItem.new(item).update_quality
     elsif item.name == 'Sulfuras, Hand of Ragnaros'
-      return update_quality_sulfuras
+      SulfurasItem.new(item).update_quality
     elsif item.name == 'Backstage passes to a TAFKAL80ETC concert'
-      return update_quality_backstage
+      BackstageItem.new(item).update_quality
     end
   end
+end
 
-  def update_quality_normal
+class NormalItem
+  attr_reader :item
+
+  def initialize(item)
+    @item = item
+  end
+
+  def update_quality
     item.sell_in -= 1
     return if item.quality == 0
 
     item.quality -= 1
     item.quality -= 1 if item.sell_in <= 0
   end
+end
 
-  def update_quality_aged_brie
+class BrieItem
+  attr_reader :item
+
+  def initialize(item)
+    @item = item
+  end
+
+  def update_quality
     item.sell_in -= 1
     return if item.quality >= 50
 
     item.quality += 1
     item.quality += 1 if item.sell_in <= 0 && item.quality < 50
   end
+end
 
-  def update_quality_sulfuras
+class SulfurasItem
+  attr_reader :item
 
+  def initialize(item)
+    @item = item
   end
 
-  def update_quality_backstage
+  def update_quality
+  end
+end
+
+class BackstageItem
+  attr_reader :item
+
+  def initialize(item)
+    @item = item
+  end
+
+  def update_quality
     item.sell_in -= 1
     return if item.quality == 50
     return item.quality = 0 if item.sell_in < 0 
