@@ -1,5 +1,5 @@
 require 'rspec/given'
-require 'gilded_rose'
+require '/Users/agleeson/kata/gilded_rose'
 
 describe "#update_quality" do
 
@@ -162,7 +162,6 @@ describe "#update_quality" do
     end
 
     context "conjured item" do
-      before { pending }
       Given(:name) { "Conjured Mana Cake" }
 
       Invariant { item.sell_in.should == initial_sell_in-1 }

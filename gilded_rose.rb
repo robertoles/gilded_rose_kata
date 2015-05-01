@@ -1,92 +1,36 @@
-class GildedRose
-  attr_reader :item
-
-  def initialize(item)
-    @item = item_classes[item.name].new(item)
-  end
-
-  def item_classes
-    {
-      "NORMAL ITEM" => NormalItem,
-      "Aged Brie" => BrieItem,
-      "Sulfuras, Hand of Ragnaros" => SulfurasItem,
-      "Backstage passes to a TAFKAL80ETC concert" => BackstageItem
-    }
-  end
-
-  def update_quality
-    item.update_quality
-  end
-end
-
-class NormalItem
-  attr_reader :item
-
-  def initialize(item)
-    @item = item
-  end
-
-  def update_quality
-    item.sell_in -= 1
-    return if item.quality == 0
-
-    item.quality -= 1
-    item.quality -= 1 if item.sell_in <= 0
-  end
-end
-
-class BrieItem
-  attr_reader :item
-
-  def initialize(item)
-    @item = item
-  end
-
-  def update_quality
-    item.sell_in -= 1
-    return if item.quality >= 50
-
-    item.quality += 1
-    item.quality += 1 if item.sell_in <= 0 && item.quality < 50
-  end
-end
-
-class SulfurasItem
-  attr_reader :item
-
-  def initialize(item)
-    @item = item
-  end
-
-  def update_quality
-  end
-end
-
-class BackstageItem
-  attr_reader :item
-
-  def initialize(item)
-    @item = item
-  end
-
-  def update_quality
-    item.sell_in -= 1
-    return if item.quality == 50
-    return item.quality = 0 if item.sell_in < 0 
-
-    item.quality += 1
-    item.quality += 1 if item.sell_in < 10
-    item.quality += 1 if item.sell_in < 5
-  end
-end
-
 def update_quality(items)
   items.each do |item|
-    GildedRose.new(item).update_quality  
+    if item.name != 'Aged Brie' && item.name != 'Backstage passes to a TAFKAL80ETC concert'
+      item.quality -= 1 if item.quality > 0 and item.name != 'Sulfuras, Hand of Ragnaros'
+    else
+      if item.quality < 50
+        item.quality += 1
+        if item.name == 'Backstage passes to a TAFKAL80ETC concert'
+          item.quality += 1 if item.sell_in < 11 and item.quality < 50
+          item.quality += 1 if item.sell_in < 6 and item.quality < 50
+        end
+      end
+    end
+
+    item.sell_in -= 1 if item.name != 'Sulfuras, Hand of Ragnaros'
+
+    if item.sell_in < 0
+      if item.name != "Aged Brie"
+        if item.name != 'Backstage passes to a TAFKAL80ETC concert'
+          item.quality -= 1 if item.quality > 0 and item.name != 'Sulfuras, Hand of Ragnaros'
+        else
+          item.quality = item.quality - item.quality
+        end
+      else
+        item.quality += 1 if item.quality < 50
+      end
+    end
+
   end
 end
 
 # DO NOT CHANGE THINGS BELOW -----------------------------------------
+# OK I won't
 
 Item = Struct.new(:name, :sell_in, :quality)
 
