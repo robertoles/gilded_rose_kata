@@ -1,88 +1,28 @@
-class GildedRose
-  attr_reader :item
-
-  def initialize(item)
-    @item = item_classes[item.name].new(item)
-  end
-
-  def item_classes
-    {
-      "NORMAL ITEM" => NormalItem,
-      "Aged Brie" => BrieItem,
-      "Sulfuras, Hand of Ragnaros" => SulfurasItem,
-      "Backstage passes to a TAFKAL80ETC concert" => BackstageItem
-    }
-  end
-
-  def update_quality
-    item.update_quality
-  end
-end
-
-class NormalItem
-  attr_reader :item
-
-  def initialize(item)
-    @item = item
-  end
-
-  def update_quality
-    item.sell_in -= 1
-    return if item.quality == 0
-
-    item.quality -= 1
-    item.quality -= 1 if item.sell_in <= 0
-  end
-end
-
-class BrieItem
-  attr_reader :item
-
-  def initialize(item)
-    @item = item
-  end
-
-  def update_quality
-    item.sell_in -= 1
-    return if item.quality >= 50
-
-    item.quality += 1
-    item.quality += 1 if item.sell_in <= 0 && item.quality < 50
-  end
-end
-
-class SulfurasItem
-  attr_reader :item
-
-  def initialize(item)
-    @item = item
-  end
-
-  def update_quality
-  end
-end
-
-class BackstageItem
-  attr_reader :item
-
-  def initialize(item)
-    @item = item
-  end
-
-  def update_quality
-    item.sell_in -= 1
-    return if item.quality == 50
-    return item.quality = 0 if item.sell_in < 0 
-
-    item.quality += 1
-    item.quality += 1 if item.sell_in < 10
-    item.quality += 1 if item.sell_in < 5
-  end
-end
-
 def update_quality(items)
-  items.each do |item|
-    GildedRose.new(item).update_quality  
+  items.each do |i|
+    tickets = i.name == 'Backstage passes to a TAFKAL80ETC concert'
+    sulfuras = i.name == 'Sulfuras, Hand of Ragnaros'
+
+    i.sell_in -= 1 unless sulfuras
+
+    if i.name == 'Aged Brie'
+      i.quality += i.sell_in < 1 ? 2 : 1
+    elsif tickets and i.sell_in >= 0
+      i.quality += 1
+      i.quality += 1 if i.sell_in < 10
+      i.quality += 1 if i.sell_in < 5
+    elsif tickets and i.sell_in < 0
+      i.quality = 0 
+    elsif !sulfuras
+      reduction = i.sell_in < 0 ? 2 : 1
+      reduction *= 2 if i.name.match('Conjured')
+      i.quality -= reduction
+    end
+    
+    if !sulfuras
+      i.quality = 0 if i.quality < 0
+      i.quality = 50 if i.quality > 50
+    end
   end
 end
 
